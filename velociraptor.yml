@@ -1,17 +1,13 @@
-allow:
-  # - write
-  # - read
-  # - net
-  # - env
+# allow:
+#   - write
+#   - read
+#   - net
+#   - env
 
 # envFile:
 #   - .env
 
 scripts:
-  main:
-    desc: Runs main script
-    cmd: main.ts
-
   server:
     desc: Starts local server
     cmd: server.ts
