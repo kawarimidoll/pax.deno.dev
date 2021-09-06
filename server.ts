@@ -1,8 +1,12 @@
 /// <reference path="./deploy.d.ts" />
 import { extract } from "./utils.ts";
+import { log } from "./deps.ts";
 
 const listener = Deno.listen({ port: 8080 });
-console.log(`HTTP server listening on http://localhost:${listener.addr.port}`);
+if (!Deno.env.get("DENO_DEPLOYMENT_ID")) {
+  const { hostname, port } = listener.addr;
+  log.info(`HTTP server listening on http://${hostname}:${port}`);
+}
 
 function genResponse(status: number, attrs?: ResponseInit): Response {
   const statusText = {
@@ -22,7 +26,6 @@ async function handleConn(conn: Deno.Conn) {
 }
 
 function handler(request: Request, _conn: Deno.Conn) {
-  console.log({ access: request.url });
   if (request.url.includes("favicon")) {
     return new Response("ok");
   }
@@ -41,7 +44,7 @@ function handler(request: Request, _conn: Deno.Conn) {
 
   const host = "https://raw.githubusercontent.com";
   const location = [host, owner, repo, tag, file].join("/");
-  console.log({ location });
+  log.info({ access: request.url, location });
 
   return genResponse(301, { headers: { location } });
 }
