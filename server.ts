@@ -1,5 +1,5 @@
 /// <reference path="./deploy.d.ts" />
-import { extract } from "./mod.ts";
+import { extract } from "./utils.ts";
 
 const listener = Deno.listen({ port: 8080 });
 console.log(`HTTP server listening on http://localhost:${listener.addr.port}`);
