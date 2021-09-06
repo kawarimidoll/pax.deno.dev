@@ -1,5 +1,4 @@
 import { assertEquals } from "./deps.ts";
-
 import { extract, parse } from "./utils.ts";
 
 console.log("test extract");
@@ -69,6 +68,16 @@ Deno.test("/owner/repo@tag/nested/file", () => {
 });
 
 console.log("test parse");
+Deno.test("invalid", () => {
+  assertEquals(
+    parse("https://github.com/owner"),
+    "https://pax.deno.dev/",
+  );
+  assertEquals(
+    parse("https://deno.land/x/module"),
+    "https://pax.deno.dev/",
+  );
+});
 Deno.test("https://github.com/owner/repo", () => {
   assertEquals(
     parse("https://github.com/owner/repo"),
