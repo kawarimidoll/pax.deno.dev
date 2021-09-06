@@ -1,6 +1,4 @@
-# [WIP] pax.deno.dev
-
-**⚠️ currently not works**
+# pax.deno.dev
 
 [![ci](https://github.com/kawarimidoll/deno-dev-template/workflows/ci/badge.svg)](.github/workflows/ci.yml)
 [![deno.land](https://img.shields.io/badge/deno-%5E1.0.0-green?logo=deno)](https://deno.land)
@@ -27,11 +25,11 @@ to
 
 ### Bookmarklet
 
-Use this bookmarklet in the GitHub repository page to generate URL to
+Use this bookmarklet in the GitHub repository page to copy URL to
 `pax.deno.dev`.
 
 ```
-javascript:prompt("Copy to use this pax!",((path)=>{const match=path.match(/github\.com\/([^\/]+)\/([^\/]+)(\/(tree|blob)\/([^\/]+))?(\/.*)?/,);if(!match)return"Invalid URL";const[,owner,repo,,,branch,file]=match;return`https://pax.deno.dev/${owner}/${repo}${branch?"@"+branch:""}${file||""}`})(location.origin+location.pathname));
+javascript:((d)=>((c,b,l)=>{c.textContent=(([,r="",,,t,f=""])=>`https://pax.deno.dev/${r}${t?"@"+t:""}${f}`)((l.origin+l.pathname).match(/^https:\/\/github\.com\/([^\/]+\/[^\/]+)(\/(tree|blob)\/([^\/]+))?(\/.*)?/)||[]);b.appendChild(c);c.select();d.execCommand("copy");b.removeChild(c);})(d.createElement("textArea"),d.body,location))(document)
 ```
 
 ## Example <img src="https://twemoji.maxcdn.com/v/13.1.0/72x72/1f680.png" alt="rocket" width="24">
