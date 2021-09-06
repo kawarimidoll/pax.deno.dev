@@ -2,8 +2,8 @@ name: update-deno-dependencies
 
 on:
   workflow_dispatch:
-  # schedule: # disable in template
-  #   - cron: "0 0 * * *"
+  schedule:
+    - cron: "0 0 * * *"
 
 jobs:
   udd:
@@ -14,7 +14,7 @@ jobs:
       - name: Update dependencies
         run: >
           deno run -A https://deno.land/x/udd/main.ts
-          $(find . -name "*.ts") --test="deno test -Ar"
+          $(find . -name "*.ts") --test="deno test -r"
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
