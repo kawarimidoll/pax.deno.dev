@@ -28,6 +28,10 @@ function handler(request: Request, _conn: Deno.Conn) {
   }
 
   const { pathname } = new URL(request.url);
+  if (pathname === "/") {
+    const location = "https://github.com/kawarimidoll/pax.deno.dev";
+    return genResponse(301, { headers: { location } });
+  }
 
   const [owner, repo, tag, file] = extract(pathname);
 
