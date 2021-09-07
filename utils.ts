@@ -11,16 +11,6 @@ export function extract(path: string) {
   ];
 }
 
-export function generate(
-  { owner, repo, tag, file, flag }: Record<string, string>,
-) {
-  let host = "https://raw.githubusercontent.com";
-  if (flag.includes("d")) {
-    host = "https://doc.deno.land/" + host.replace(/:\//, "");
-  }
-  return [host, owner, repo, tag, file].join("/");
-}
-
 export function handleURL(url: string) {
   const { pathname, search } = new URL(url);
 
@@ -36,7 +26,11 @@ export function handleURL(url: string) {
 
   const flag = search.replace(/^\?/, "").split("=")[0];
 
-  return generate({ owner, repo, tag, file, flag });
+  let host = "https://raw.githubusercontent.com";
+  if (flag.includes("d")) {
+    host = "https://doc.deno.land/" + host.replace(/:\//, "");
+  }
+  return [host, owner, repo, tag, file].join("/");
 }
 
 export function parse(path: string) {
