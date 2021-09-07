@@ -1,5 +1,5 @@
 import { assertEquals } from "./deps.ts";
-import { extract, generate, parse } from "./utils.ts";
+import { extract, handleURL, parse } from "./utils.ts";
 
 Deno.test("[extract] invalid", () => {
   assertEquals(
@@ -66,22 +66,96 @@ Deno.test("[extract] /owner/repo@tag/nested/file", () => {
   );
 });
 
-const generateArgs = {
-  owner: "owner",
-  repo: "repo",
-  tag: "master",
-  file: "mod.ts",
-};
-Deno.test("[generate] to raw.githubusercontent.com", () => {
+Deno.test("[handleURL] invalid", () => {
   assertEquals(
-    generate({ ...generateArgs, flag: "" }),
-    "https://raw.githubusercontent.com/owner/repo/master/mod.ts",
+    handleURL("https://pax.deno.dev/owner"),
+    "",
+  );
+  assertEquals(
+    handleURL("https://pax.deno.dev/owner/"),
+    "",
+  );
+  assertEquals(
+    handleURL("https://pax.deno.dev/owner@tag"),
+    "",
+  );
+  assertEquals(
+    handleURL("https://pax.deno.dev/owner@tag?d"),
+    "",
   );
 });
-Deno.test("[generate] to doc.deno.land", () => {
+Deno.test("[handleURL] root", () => {
   assertEquals(
-    generate({ ...generateArgs, flag: "d" }),
+    handleURL("https://pax.deno.dev"),
+    "https://github.com/kawarimidoll/pax.deno.dev",
+  );
+  assertEquals(
+    handleURL("https://pax.deno.dev/"),
+    "https://github.com/kawarimidoll/pax.deno.dev",
+  );
+  assertEquals(
+    handleURL("https://pax.deno.dev?d"),
+    "https://github.com/kawarimidoll/pax.deno.dev",
+  );
+  assertEquals(
+    handleURL("https://pax.deno.dev#d"),
+    "https://github.com/kawarimidoll/pax.deno.dev",
+  );
+});
+Deno.test("[handleURL] /owner/repo", () => {
+  assertEquals(
+    handleURL("https://pax.deno.dev/owner/repo"),
+    "https://raw.githubusercontent.com/owner/repo/master/mod.ts",
+  );
+  assertEquals(
+    handleURL("https://pax.deno.dev/owner/repo/"),
+    "https://raw.githubusercontent.com/owner/repo/master/mod.ts",
+  );
+  assertEquals(
+    handleURL("https://pax.deno.dev/owner/repo?d"),
     "https://doc.deno.land/https/raw.githubusercontent.com/owner/repo/master/mod.ts",
+  );
+});
+Deno.test("[handleURL] /owner/repo/path/to/file", () => {
+  assertEquals(
+    handleURL("https://pax.deno.dev/owner/repo/path/to/file"),
+    "https://raw.githubusercontent.com/owner/repo/master/path/to/file",
+  );
+  assertEquals(
+    handleURL("https://pax.deno.dev/owner/repo/path/to/file/"),
+    "https://raw.githubusercontent.com/owner/repo/master/path/to/file",
+  );
+  assertEquals(
+    handleURL("https://pax.deno.dev/owner/repo/path/to/file?d"),
+    "https://doc.deno.land/https/raw.githubusercontent.com/owner/repo/master/path/to/file",
+  );
+});
+Deno.test("[handleURL] /owner/repo@tag", () => {
+  assertEquals(
+    handleURL("https://pax.deno.dev/owner/repo@tag"),
+    "https://raw.githubusercontent.com/owner/repo/tag/mod.ts",
+  );
+  assertEquals(
+    handleURL("https://pax.deno.dev/owner/repo@tag/"),
+    "https://raw.githubusercontent.com/owner/repo/tag/mod.ts",
+  );
+  assertEquals(
+    handleURL("https://pax.deno.dev/owner/repo@tag?d"),
+    "https://doc.deno.land/https/raw.githubusercontent.com/owner/repo/tag/mod.ts",
+  );
+});
+Deno.test("[handleURL] /owner/repo@tag/path/to/file", () => {
+  assertEquals(
+    handleURL("https://pax.deno.dev/owner/repo@tag/path/to/file"),
+    "https://raw.githubusercontent.com/owner/repo/tag/path/to/file",
+  );
+  assertEquals(
+    handleURL("https://pax.deno.dev/owner/repo@tag/path/to/file/"),
+    "https://raw.githubusercontent.com/owner/repo/tag/path/to/file",
+  );
+  assertEquals(
+    handleURL("https://pax.deno.dev/owner/repo@tag/path/to/file?d"),
+    "https://doc.deno.land/https/raw.githubusercontent.com/owner/repo/tag/path/to/file",
   );
 });
 
