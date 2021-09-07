@@ -1,5 +1,5 @@
 import { assertEquals } from "./deps.ts";
-import { extract, parse } from "./utils.ts";
+import { extract, generate, parse } from "./utils.ts";
 
 Deno.test("[extract] invalid", () => {
   assertEquals(
@@ -63,6 +63,25 @@ Deno.test("[extract] /owner/repo@tag/nested/file", () => {
   assertEquals(
     extract("/owner/repo@tag/nested/file/"),
     ["owner", "repo", "tag", "nested/file"],
+  );
+});
+
+const generateArgs = {
+  owner: "owner",
+  repo: "repo",
+  tag: "master",
+  file: "mod.ts",
+};
+Deno.test("[generate] to raw.githubusercontent.com", () => {
+  assertEquals(
+    generate({ ...generateArgs, flag: "" }),
+    "https://raw.githubusercontent.com/owner/repo/master/mod.ts",
+  );
+});
+Deno.test("[generate] to doc.deno.land", () => {
+  assertEquals(
+    generate({ ...generateArgs, flag: "d" }),
+    "https://doc.deno.land/https/raw.githubusercontent.com/owner/repo/master/mod.ts",
   );
 });
 
