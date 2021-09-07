@@ -21,6 +21,24 @@ export function generate(
   return [host, owner, repo, tag, file].join("/");
 }
 
+export function handleURL(url: string) {
+  const { pathname, search } = new URL(url);
+
+  if (pathname === "/") {
+    return "https://github.com/kawarimidoll/pax.deno.dev";
+  }
+
+  const [owner, repo, tag, file] = extract(pathname);
+
+  if (!owner || !repo) {
+    return "";
+  }
+
+  const flag = search.replace(/^\?/, "").split("=")[0];
+
+  return generate({ owner, repo, tag, file, flag });
+}
+
 export function parse(path: string) {
   // match example: [
   //   "https://github.com/owner/repo/blob/tag/path/to/file",
