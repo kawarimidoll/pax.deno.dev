@@ -1,7 +1,7 @@
 # pax.deno.dev
 
-[![ci](https://github.com/kawarimidoll/deno-dev-template/workflows/ci/badge.svg)](.github/workflows/ci.yml)
-[![deno.land](https://img.shields.io/badge/deno-%5E1.0.0-green?logo=deno)](https://deno.land)
+[![ci](https://github.com/kawarimidoll/pax.deno.dev/workflows/ci/badge.svg)](.github/workflows/ci.yml)
+[![deno.land](https://img.shields.io/badge/deno-%5E1.3.0-green?logo=deno)](https://deno.land)
 [![vr scripts](https://badges.velociraptor.run/flat.svg)](https://velociraptor.run)
 [![LICENSE](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE)
 
@@ -19,8 +19,8 @@ to
 
 - `owner` and `repo` are required.
 - `@branch_or_tag` and `path/to/file` are optional.
-- If `@branch_or_tag` is skipped, use `master` implicitly. This works well even
-  if your default branch is `main`.
+  - If `@branch_or_tag` is skipped, use `master` implicitly. This works well
+    even if your default branch is `main`.
   - If `path/to/file` is skipped, use `mod.ts` implicitly.
 
 ### Bookmarklet
@@ -72,8 +72,8 @@ import { func } from "https://pax.deno.dev/owner/repo@tag/path/to/file.ts";
 
 ### Link to doc.deno.land
 
-With the parameter `d`, the link to [doc.deno.land](https://doc.deno.land) is generated.
-The main part of URL should follow the syntax above.
+With the parameter `d`, the link to [doc.deno.land](https://doc.deno.land) is
+generated. The main part of URL should follow the syntax above.
 
 ```
 https://pax.deno.dev/owner/repo?d
@@ -82,6 +82,6 @@ https://pax.deno.dev/owner/repo?d
 # https://doc.deno.land/https/raw.githubusercontent.com/owner/repo/master/mod.ts
 ```
 
-## Prior arts
+## Prior arts <img src="https://twemoji.maxcdn.com/v/13.1.0/72x72/1f3a8.png" alt="art" style="height:1rem">
 
 - This project is heavily inspired by [Deno PKG](https://denopkg.com/).
