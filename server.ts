@@ -1,9 +1,10 @@
 /// <reference path="./deploy.d.ts" />
-import { extract } from "./utils.ts";
+import { extract, generate } from "./utils.ts";
 import { log } from "./deps.ts";
 
+const isProd = Deno.env.get("DENO_DEPLOYMENT_ID");
 const listener = Deno.listen({ port: 8080 });
-if (!Deno.env.get("DENO_DEPLOYMENT_ID")) {
+if (!isProd) {
   const { hostname, port } = listener.addr;
   log.info(`HTTP server listening on http://${hostname}:${port}`);
 }
@@ -15,7 +16,9 @@ function genResponse(status: number, attrs?: ResponseInit): Response {
   }[status];
 
   const init = { status, statusText, ...attrs };
-  return new Response(`${status}: ${statusText}`, init);
+  return isProd
+    ? new Response(`${status}: ${statusText}`, init)
+    : new Response(JSON.stringify(init));
 }
 
 async function handleConn(conn: Deno.Conn) {
@@ -26,11 +29,8 @@ async function handleConn(conn: Deno.Conn) {
 }
 
 function handler(request: Request, _conn: Deno.Conn) {
-  if (request.url.includes("favicon")) {
-    return new Response("ok");
-  }
+  const { pathname, search } = new URL(request.url);
 
-  const { pathname } = new URL(request.url);
   if (pathname === "/") {
     const location = "https://github.com/kawarimidoll/pax.deno.dev";
     return genResponse(301, { headers: { location } });
@@ -42,9 +42,11 @@ function handler(request: Request, _conn: Deno.Conn) {
     return genResponse(400);
   }
 
-  const host = "https://raw.githubusercontent.com";
-  const location = [host, owner, repo, tag, file].join("/");
-  log.info({ access: request.url, location });
+  const flag = search.replace(/^\?/, "").split("=")[0];
+
+  const args = { owner, repo, tag, file, flag };
+  const location = generate(args);
+  log.info({ access: request.url, ...args, location });
 
   return genResponse(301, { headers: { location } });
 }
