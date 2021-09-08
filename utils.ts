@@ -1,3 +1,8 @@
+export function isProd() {
+  // declare as a function to change environment when testing
+  return !!Deno.env.get("DENO_DEPLOYMENT_ID");
+}
+
 export function extract(path: string) {
   const match = path.match(/^\/([^\/]+)\/([^\/@]+)(@[^\/]+)?(\/.*)?/);
   if (!match) return [];
@@ -31,6 +36,15 @@ export function handleURL(url: string) {
     host = "https://doc.deno.land/" + host.replace(/:\//, "");
   }
   return [host, owner, repo, tag, file].join("/");
+}
+
+export function genResponseArgs(location: string): [string, ResponseInit?] {
+  const [status, statusText] = location
+    ? [301, "Moved Permanently"]
+    : [400, "Invalid URL"];
+
+  const init = { status, statusText, headers: { location } };
+  return isProd() ? [`${status}: ${statusText}`, init] : [JSON.stringify(init)];
 }
 
 export function parse(path: string) {
