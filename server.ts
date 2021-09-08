@@ -1,4 +1,4 @@
-/// <reference path="./deploy.d.ts" />
+/// <reference path="./_deploy.d.ts" />
 import { handleURL } from "./utils.ts";
 
 const isDev = !Deno.env.get("DENO_DEPLOYMENT_ID");
