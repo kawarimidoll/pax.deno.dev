@@ -22,6 +22,20 @@ const index = "<!DOCTYPE html>" +
         rel: "stylesheet",
         href: "https://cdn.jsdelivr.net/npm/water.css@2/out/water.min.css",
       }),
+      h("meta", { property: "og:url", content: "https://pax.deno.dev/" }),
+      h("meta", { property: "og:type", content: "website" }),
+      h("meta", { property: "og:title", content: "pax.deno.dev" }),
+      h("meta", {
+        property: "og:description",
+        content: "Access the modules on GitHub via Deno Deploy🦕",
+      }),
+      h("meta", { property: "og:site_name", content: "pax.deno.dev" }),
+      h("meta", {
+        property: "og:image",
+        content: "https://twemoji.maxcdn.com/v/13.1.0/72x72/1f4e6.png",
+      }),
+      h("meta", { name: "twitter:card", content: "summary" }),
+      h("meta", { name: "twitter:site", content: "@kawarimidoll" }),
     ),
     h("body", Marked.parse(readme).content, corner),
   );
