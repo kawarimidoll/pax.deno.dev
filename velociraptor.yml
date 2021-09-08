@@ -32,7 +32,7 @@ scripts:
 
   test:
     desc: Runs the tests
-    cmd: deno test --reload
+    cmd: deno test --reload --allow-env
     gitHook: pre-push
 
   cov:

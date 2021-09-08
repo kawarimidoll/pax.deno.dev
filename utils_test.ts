@@ -1,5 +1,15 @@
 import { assertEquals } from "./deps.ts";
-import { extract, handleURL, parse } from "./utils.ts";
+import { extract, genResponseArgs, handleURL, isProd, parse } from "./utils.ts";
+
+Deno.test("[isProd] check environment variables", () => {
+  // development
+  Deno.env.delete("DENO_DEPLOYMENT_ID");
+  assertEquals(isProd(), false);
+
+  // production
+  Deno.env.set("DENO_DEPLOYMENT_ID", "test-production");
+  assertEquals(isProd(), true);
+});
 
 Deno.test("[extract] invalid", () => {
   assertEquals(
@@ -156,6 +166,77 @@ Deno.test("[handleURL] /owner/repo@tag/path/to/file", () => {
   assertEquals(
     handleURL("https://pax.deno.dev/owner/repo@tag/path/to/file?d"),
     "https://doc.deno.land/https/raw.githubusercontent.com/owner/repo/tag/path/to/file",
+  );
+});
+
+Deno.test("[genResponseArgs] invalid", () => {
+  // development
+  Deno.env.delete("DENO_DEPLOYMENT_ID");
+  assertEquals(
+    genResponseArgs(""),
+    [
+      JSON.stringify(
+        {
+          status: 400,
+          statusText: "Invalid URL",
+          headers: { location: "" },
+        },
+      ),
+    ],
+  );
+
+  // production
+  Deno.env.set("DENO_DEPLOYMENT_ID", "test-production");
+  assertEquals(
+    genResponseArgs(""),
+    [
+      "400: Invalid URL",
+      {
+        status: 400,
+        statusText: "Invalid URL",
+        headers: { location: "" },
+      },
+    ],
+  );
+});
+Deno.test("[genResponseArgs] redirect", () => {
+  // development
+  Deno.env.delete("DENO_DEPLOYMENT_ID");
+  assertEquals(
+    genResponseArgs(
+      "https://raw.githubusercontent.com/owner/repo/tag/path/to/file",
+    ),
+    [
+      JSON.stringify(
+        {
+          status: 301,
+          statusText: "Moved Permanently",
+          headers: {
+            location:
+              "https://raw.githubusercontent.com/owner/repo/tag/path/to/file",
+          },
+        },
+      ),
+    ],
+  );
+
+  // production
+  Deno.env.set("DENO_DEPLOYMENT_ID", "test-production");
+  assertEquals(
+    genResponseArgs(
+      "https://raw.githubusercontent.com/owner/repo/tag/path/to/file",
+    ),
+    [
+      "301: Moved Permanently",
+      {
+        status: 301,
+        statusText: "Moved Permanently",
+        headers: {
+          location:
+            "https://raw.githubusercontent.com/owner/repo/tag/path/to/file",
+        },
+      },
+    ],
   );
 });
 
