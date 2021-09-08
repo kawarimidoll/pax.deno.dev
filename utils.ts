@@ -39,9 +39,13 @@ export function handleURL(url: string) {
 }
 
 export function genResponseArgs(location: string): [string, ResponseInit?] {
-  const [status, statusText] = location
-    ? [301, "Moved Permanently"]
-    : [400, "Invalid URL"];
+  let [status, statusText] = [301, "Moved Permanently"];
+  if (location === "https://github.com/kawarimidoll/pax.deno.dev") {
+    // Not use 301, because top page may be useful something...
+    [status, statusText] = [302, "Found"];
+  } else if (location === "") {
+    [status, statusText] = [400, "Invalid URL"];
+  }
 
   const init = { status, statusText, headers: { location } };
   return isProd() ? [`${status}: ${statusText}`, init] : [JSON.stringify(init)];

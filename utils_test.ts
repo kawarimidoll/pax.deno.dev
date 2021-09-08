@@ -238,6 +238,21 @@ Deno.test("[genResponseArgs] redirect", () => {
       },
     ],
   );
+  assertEquals(
+    genResponseArgs(
+      "https://github.com/kawarimidoll/pax.deno.dev",
+    ),
+    [
+      "302: Found",
+      {
+        status: 302,
+        statusText: "Found",
+        headers: {
+          location: "https://github.com/kawarimidoll/pax.deno.dev",
+        },
+      },
+    ],
+  );
 });
 
 Deno.test("[parse] invalid", () => {
