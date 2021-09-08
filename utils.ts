@@ -1,7 +1,30 @@
-export function isProd() {
-  // declare as a function to change environment when testing
-  return !!Deno.env.get("DENO_DEPLOYMENT_ID");
-}
+import { Marked, tag as h } from "./deps.ts";
+
+const readme = await Deno.readTextFile("./README.md");
+const corner = await Deno.readTextFile("./corner.html");
+const index = "<!DOCTYPE html>" +
+  h(
+    "html",
+    h(
+      "head",
+      h("meta", { charset: "UTF-8" }),
+      h("title", "pax.deno.dev"),
+      h("meta", {
+        name: "viewport",
+        content: "width:device-width,initial-scale:1.0,minimum-scale:1.0",
+      }),
+      h("link", {
+        rel: "icon",
+        type: "image/png",
+        href: "https://twemoji.maxcdn.com/v/13.1.0/72x72/1f4e6.png",
+      }),
+      h("link", {
+        rel: "stylesheet",
+        href: "https://cdn.jsdelivr.net/npm/water.css@2/out/water.min.css",
+      }),
+    ),
+    h("body", Marked.parse(readme).content, corner),
+  );
 
 export function extract(path: string) {
   const match = path.match(/^\/([^\/]+)\/([^\/@]+)(@[^\/]+)?(\/.*)?/);
@@ -16,39 +39,30 @@ export function extract(path: string) {
   ];
 }
 
-export function handleURL(url: string) {
+export function handleURL(url: string): [string, ResponseInit] {
   const { pathname, search } = new URL(url);
-
   if (pathname === "/") {
-    return "https://github.com/kawarimidoll/pax.deno.dev";
+    return [index, { headers: { "content-type": "text/html" } }];
   }
 
   const [owner, repo, tag, file] = extract(pathname);
 
   if (!owner || !repo) {
-    return "";
+    const [status, statusText] = [400, "Invalid URL"];
+    const init = { status, statusText };
+    return [`${status}: ${statusText}`, init];
   }
 
   const flag = search.replace(/^\?/, "").split("=")[0];
 
   let host = "https://raw.githubusercontent.com";
   if (flag.includes("d")) {
-    host = "https://doc.deno.land/" + host.replace(/:\//, "");
+    host = "https://doc.deno.land/" + host.replace(":/", "");
   }
-  return [host, owner, repo, tag, file].join("/");
-}
-
-export function genResponseArgs(location: string): [string, ResponseInit?] {
-  let [status, statusText] = [301, "Moved Permanently"];
-  if (location === "https://github.com/kawarimidoll/pax.deno.dev") {
-    // Not use 301, because top page may be useful something...
-    [status, statusText] = [302, "Found"];
-  } else if (location === "") {
-    [status, statusText] = [400, "Invalid URL"];
-  }
-
+  const location = [host, owner, repo, tag, file].join("/");
+  const [status, statusText] = [301, "Moved Permanently"];
   const init = { status, statusText, headers: { location } };
-  return isProd() ? [`${status}: ${statusText}`, init] : [JSON.stringify(init)];
+  return [`${status}: ${statusText}`, init];
 }
 
 export function parse(path: string) {
