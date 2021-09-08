@@ -1,15 +1,5 @@
 import { assertEquals } from "./deps.ts";
-import { extract, genResponseArgs, handleURL, isProd, parse } from "./utils.ts";
-
-Deno.test("[isProd] check environment variables", () => {
-  // development
-  Deno.env.delete("DENO_DEPLOYMENT_ID");
-  assertEquals(isProd(), false);
-
-  // production
-  Deno.env.set("DENO_DEPLOYMENT_ID", "test-production");
-  assertEquals(isProd(), true);
-});
+import { extract, handleURL, parse } from "./utils.ts";
 
 Deno.test("[extract] invalid", () => {
   assertEquals(
@@ -77,178 +67,171 @@ Deno.test("[extract] /owner/repo@tag/nested/file", () => {
 });
 
 Deno.test("[handleURL] invalid", () => {
+  const expected = [
+    "400: Invalid URL",
+    { status: 400, statusText: "Invalid URL" },
+  ];
   assertEquals(
     handleURL("https://pax.deno.dev/owner"),
-    "",
+    expected,
   );
   assertEquals(
     handleURL("https://pax.deno.dev/owner/"),
-    "",
+    expected,
   );
   assertEquals(
     handleURL("https://pax.deno.dev/owner@tag"),
-    "",
+    expected,
   );
   assertEquals(
     handleURL("https://pax.deno.dev/owner@tag?d"),
-    "",
+    expected,
   );
 });
 Deno.test("[handleURL] root", () => {
+  // don't test page contents
   assertEquals(
-    handleURL("https://pax.deno.dev"),
-    "https://github.com/kawarimidoll/pax.deno.dev",
+    handleURL("https://pax.deno.dev")[1],
+    { headers: { "content-type": "text/html" } },
   );
   assertEquals(
-    handleURL("https://pax.deno.dev/"),
-    "https://github.com/kawarimidoll/pax.deno.dev",
+    handleURL("https://pax.deno.dev/")[1],
+    { headers: { "content-type": "text/html" } },
   );
   assertEquals(
-    handleURL("https://pax.deno.dev?d"),
-    "https://github.com/kawarimidoll/pax.deno.dev",
+    handleURL("https://pax.deno.dev?d")[1],
+    { headers: { "content-type": "text/html" } },
   );
   assertEquals(
-    handleURL("https://pax.deno.dev#d"),
-    "https://github.com/kawarimidoll/pax.deno.dev",
+    handleURL("https://pax.deno.dev#d")[1],
+    { headers: { "content-type": "text/html" } },
   );
 });
 Deno.test("[handleURL] /owner/repo", () => {
+  const location = "https://raw.githubusercontent.com/owner/repo/master/mod.ts";
+  const expected = [
+    "301: Moved Permanently",
+    {
+      status: 301,
+      statusText: "Moved Permanently",
+      headers: { location },
+    },
+  ];
   assertEquals(
     handleURL("https://pax.deno.dev/owner/repo"),
-    "https://raw.githubusercontent.com/owner/repo/master/mod.ts",
+    expected,
   );
   assertEquals(
     handleURL("https://pax.deno.dev/owner/repo/"),
-    "https://raw.githubusercontent.com/owner/repo/master/mod.ts",
+    expected,
   );
   assertEquals(
     handleURL("https://pax.deno.dev/owner/repo?d"),
-    "https://doc.deno.land/https/raw.githubusercontent.com/owner/repo/master/mod.ts",
-  );
-});
-Deno.test("[handleURL] /owner/repo/path/to/file", () => {
-  assertEquals(
-    handleURL("https://pax.deno.dev/owner/repo/path/to/file"),
-    "https://raw.githubusercontent.com/owner/repo/master/path/to/file",
-  );
-  assertEquals(
-    handleURL("https://pax.deno.dev/owner/repo/path/to/file/"),
-    "https://raw.githubusercontent.com/owner/repo/master/path/to/file",
-  );
-  assertEquals(
-    handleURL("https://pax.deno.dev/owner/repo/path/to/file?d"),
-    "https://doc.deno.land/https/raw.githubusercontent.com/owner/repo/master/path/to/file",
-  );
-});
-Deno.test("[handleURL] /owner/repo@tag", () => {
-  assertEquals(
-    handleURL("https://pax.deno.dev/owner/repo@tag"),
-    "https://raw.githubusercontent.com/owner/repo/tag/mod.ts",
-  );
-  assertEquals(
-    handleURL("https://pax.deno.dev/owner/repo@tag/"),
-    "https://raw.githubusercontent.com/owner/repo/tag/mod.ts",
-  );
-  assertEquals(
-    handleURL("https://pax.deno.dev/owner/repo@tag?d"),
-    "https://doc.deno.land/https/raw.githubusercontent.com/owner/repo/tag/mod.ts",
-  );
-});
-Deno.test("[handleURL] /owner/repo@tag/path/to/file", () => {
-  assertEquals(
-    handleURL("https://pax.deno.dev/owner/repo@tag/path/to/file"),
-    "https://raw.githubusercontent.com/owner/repo/tag/path/to/file",
-  );
-  assertEquals(
-    handleURL("https://pax.deno.dev/owner/repo@tag/path/to/file/"),
-    "https://raw.githubusercontent.com/owner/repo/tag/path/to/file",
-  );
-  assertEquals(
-    handleURL("https://pax.deno.dev/owner/repo@tag/path/to/file?d"),
-    "https://doc.deno.land/https/raw.githubusercontent.com/owner/repo/tag/path/to/file",
-  );
-});
-
-Deno.test("[genResponseArgs] invalid", () => {
-  // development
-  Deno.env.delete("DENO_DEPLOYMENT_ID");
-  assertEquals(
-    genResponseArgs(""),
-    [
-      JSON.stringify(
-        {
-          status: 400,
-          statusText: "Invalid URL",
-          headers: { location: "" },
-        },
-      ),
-    ],
-  );
-
-  // production
-  Deno.env.set("DENO_DEPLOYMENT_ID", "test-production");
-  assertEquals(
-    genResponseArgs(""),
-    [
-      "400: Invalid URL",
-      {
-        status: 400,
-        statusText: "Invalid URL",
-        headers: { location: "" },
-      },
-    ],
-  );
-});
-Deno.test("[genResponseArgs] redirect", () => {
-  // development
-  Deno.env.delete("DENO_DEPLOYMENT_ID");
-  assertEquals(
-    genResponseArgs(
-      "https://raw.githubusercontent.com/owner/repo/tag/path/to/file",
-    ),
-    [
-      JSON.stringify(
-        {
-          status: 301,
-          statusText: "Moved Permanently",
-          headers: {
-            location:
-              "https://raw.githubusercontent.com/owner/repo/tag/path/to/file",
-          },
-        },
-      ),
-    ],
-  );
-
-  // production
-  Deno.env.set("DENO_DEPLOYMENT_ID", "test-production");
-  assertEquals(
-    genResponseArgs(
-      "https://raw.githubusercontent.com/owner/repo/tag/path/to/file",
-    ),
     [
       "301: Moved Permanently",
       {
         status: 301,
         statusText: "Moved Permanently",
         headers: {
-          location:
-            "https://raw.githubusercontent.com/owner/repo/tag/path/to/file",
+          location: "https://doc.deno.land/" + location.replace(":/", ""),
         },
       },
     ],
   );
+});
+Deno.test("[handleURL] /owner/repo/path/to/file", () => {
+  const location =
+    "https://raw.githubusercontent.com/owner/repo/master/path/to/file";
+  const expected = [
+    "301: Moved Permanently",
+    {
+      status: 301,
+      statusText: "Moved Permanently",
+      headers: { location },
+    },
+  ];
   assertEquals(
-    genResponseArgs(
-      "https://github.com/kawarimidoll/pax.deno.dev",
-    ),
+    handleURL("https://pax.deno.dev/owner/repo/path/to/file"),
+    expected,
+  );
+  assertEquals(
+    handleURL("https://pax.deno.dev/owner/repo/path/to/file/"),
+    expected,
+  );
+  assertEquals(
+    handleURL("https://pax.deno.dev/owner/repo/path/to/file?d"),
     [
-      "302: Found",
+      "301: Moved Permanently",
       {
-        status: 302,
-        statusText: "Found",
+        status: 301,
+        statusText: "Moved Permanently",
         headers: {
-          location: "https://github.com/kawarimidoll/pax.deno.dev",
+          location: "https://doc.deno.land/" + location.replace(":/", ""),
+        },
+      },
+    ],
+  );
+});
+Deno.test("[handleURL] /owner/repo@tag", () => {
+  const location = "https://raw.githubusercontent.com/owner/repo/tag/mod.ts";
+  const expected = [
+    "301: Moved Permanently",
+    {
+      status: 301,
+      statusText: "Moved Permanently",
+      headers: { location },
+    },
+  ];
+  assertEquals(
+    handleURL("https://pax.deno.dev/owner/repo@tag"),
+    expected,
+  );
+  assertEquals(
+    handleURL("https://pax.deno.dev/owner/repo@tag/"),
+    expected,
+  );
+  assertEquals(
+    handleURL("https://pax.deno.dev/owner/repo@tag?d"),
+    [
+      "301: Moved Permanently",
+      {
+        status: 301,
+        statusText: "Moved Permanently",
+        headers: {
+          location: "https://doc.deno.land/" + location.replace(":/", ""),
+        },
+      },
+    ],
+  );
+});
+Deno.test("[handleURL] /owner/repo@tag/path/to/file", () => {
+  const location =
+    "https://raw.githubusercontent.com/owner/repo/tag/path/to/file";
+  const expected = [
+    "301: Moved Permanently",
+    {
+      status: 301,
+      statusText: "Moved Permanently",
+      headers: { location },
+    },
+  ];
+  assertEquals(
+    handleURL("https://pax.deno.dev/owner/repo@tag/path/to/file"),
+    expected,
+  );
+  assertEquals(
+    handleURL("https://pax.deno.dev/owner/repo@tag/path/to/file/"),
+    expected,
+  );
+  assertEquals(
+    handleURL("https://pax.deno.dev/owner/repo@tag/path/to/file?d"),
+    [
+      "301: Moved Permanently",
+      {
+        status: 301,
+        statusText: "Moved Permanently",
+        headers: {
+          location: "https://doc.deno.land/" + location.replace(":/", ""),
         },
       },
     ],
