@@ -1,17 +1,17 @@
 # pax.deno.dev
 
 [![ci](https://github.com/kawarimidoll/pax.deno.dev/workflows/ci/badge.svg)](.github/workflows/ci.yml)
-[![deno.land](https://img.shields.io/badge/deno-%5E1.3.0-green?logo=deno)](https://deno.land)
+[![deno.land](https://img.shields.io/badge/deno-%5E1.13.0-green?logo=deno)](https://deno.land)
 [![vr scripts](https://badges.velociraptor.run/flat.svg)](https://velociraptor.run)
 [![LICENSE](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE)
 
 Access the modules on GitHub via Deno Deploy
-<img src="https://twemoji.maxcdn.com/v/13.1.0/72x72/1f995.png" alt="sauropods" style="height:1rem">
+<img src="https://twemoji.maxcdn.com/v/13.1.0/72x72/1f995.png" alt="sauropods" style="height: 1em;width: 1em;margin: 0 0.05em 0 0.1em;vertical-align: -0.1em;">
 
 "pax" represents "packs"
-<img src="https://twemoji.maxcdn.com/v/13.1.0/72x72/1f4e6.png" alt="packs" style="height:1rem">
+<img src="https://twemoji.maxcdn.com/v/13.1.0/72x72/1f4e6.png" alt="packs" style="height: 1em;width: 1em;margin: 0 0.05em 0 0.1em;vertical-align: -0.1em;">
 
-## Usage <img src="https://twemoji.maxcdn.com/v/13.1.0/72x72/2699.png" alt="gear" style="height:1rem">
+## Usage <img src="https://twemoji.maxcdn.com/v/13.1.0/72x72/2699.png" alt="gear" style="height: 1em;width: 1em;margin: 0 0.05em 0 0.1em;vertical-align: -0.1em;">
 
 `https://pax.deno.dev/<owner>/<repo>[@branch_or_tag]/[path/to/file]` redirects
 to
@@ -32,7 +32,7 @@ Use this bookmarklet in the GitHub repository page to copy URL to
 javascript:((d)=>((c,b,l)=>{c.textContent=(([,r="",,,t,f=""])=>`https://pax.deno.dev/${r}${t?"@"+t:""}${f}`)((l.origin+l.pathname).match(/^https:\/\/github\.com\/([^\/]+\/[^\/]+)(\/(tree|blob)\/([^\/]+))?(\/.*)?/)||[]);b.appendChild(c);c.select();d.execCommand("copy");b.removeChild(c);})(d.createElement("textArea"),d.body,location))(document)
 ```
 
-## Example <img src="https://twemoji.maxcdn.com/v/13.1.0/72x72/1f680.png" alt="rocket" style="height:1rem">
+## Example <img src="https://twemoji.maxcdn.com/v/13.1.0/72x72/1f680.png" alt="rocket" style="height: 1em;width: 1em;margin: 0 0.05em 0 0.1em;vertical-align: -0.1em;">
 
 ### `mod.ts` on the latest default branch
 
@@ -82,6 +82,6 @@ https://pax.deno.dev/owner/repo?d
 # https://doc.deno.land/https/raw.githubusercontent.com/owner/repo/master/mod.ts
 ```
 
-## Prior arts <img src="https://twemoji.maxcdn.com/v/13.1.0/72x72/1f3a8.png" alt="art" style="height:1rem">
+## Prior arts <img src="https://twemoji.maxcdn.com/v/13.1.0/72x72/1f3a8.png" alt="art" style="height: 1em;width: 1em;margin: 0 0.05em 0 0.1em;vertical-align: -0.1em;">
 
 - This project is heavily inspired by [Deno PKG](https://denopkg.com/).
