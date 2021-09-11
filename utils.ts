@@ -2,6 +2,10 @@ import { Marked, tag as h } from "./deps.ts";
 
 const readme = await Deno.readTextFile("./README.md");
 const corner = await Deno.readTextFile("./corner.html");
+const description = "Access the modules on GitHub via Deno Deploy🦕";
+const icon = "https://twemoji.maxcdn.com/v/13.1.0/72x72/1f4e6.png";
+const css = "https://cdn.jsdelivr.net/npm/water.css@2/out/water.min.css";
+const viewport = "width=device-width,initial-scale=1.0,minimum-scale=1.0";
 const index = "<!DOCTYPE html>" +
   h(
     "html",
@@ -9,31 +13,16 @@ const index = "<!DOCTYPE html>" +
       "head",
       h("meta", { charset: "UTF-8" }),
       h("title", "pax.deno.dev"),
-      h("meta", {
-        name: "viewport",
-        content: "width:device-width,initial-scale:1.0,minimum-scale:1.0",
-      }),
-      h("link", {
-        rel: "icon",
-        type: "image/png",
-        href: "https://twemoji.maxcdn.com/v/13.1.0/72x72/1f4e6.png",
-      }),
-      h("link", {
-        rel: "stylesheet",
-        href: "https://cdn.jsdelivr.net/npm/water.css@2/out/water.min.css",
-      }),
+      h("meta", { name: "viewport", content: viewport }),
+      h("link", { rel: "icon", type: "image/png", href: icon }),
+      h("link", { rel: "stylesheet", href: css }),
+      h("meta", { name: "description", content: description }),
       h("meta", { property: "og:url", content: "https://pax.deno.dev/" }),
       h("meta", { property: "og:type", content: "website" }),
       h("meta", { property: "og:title", content: "pax.deno.dev" }),
-      h("meta", {
-        property: "og:description",
-        content: "Access the modules on GitHub via Deno Deploy🦕",
-      }),
+      h("meta", { property: "og:description", content: description }),
       h("meta", { property: "og:site_name", content: "pax.deno.dev" }),
-      h("meta", {
-        property: "og:image",
-        content: "https://twemoji.maxcdn.com/v/13.1.0/72x72/1f4e6.png",
-      }),
+      h("meta", { property: "og:image", content: icon }),
       h("meta", { name: "twitter:card", content: "summary" }),
       h("meta", { name: "twitter:site", content: "@kawarimidoll" }),
     ),
