@@ -1,4 +1,4 @@
-export { assertEquals } from "https://deno.land/std@0.128.0/testing/asserts.ts";
+export { assertEquals } from "https://deno.land/std@0.129.0/testing/asserts.ts";
 
 export { tag } from "https://deno.land/x/markup_tag@0.3.0/mod.ts";
 
