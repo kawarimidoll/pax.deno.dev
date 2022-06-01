@@ -67,7 +67,7 @@ Deno.test("[extract] /owner/repo@tag/nested/file", () => {
 });
 
 Deno.test("[handleURL] invalid", () => {
-  const expected = [
+  const expected: ReturnType<typeof handleURL> = [
     "400: Invalid URL",
     { status: 400, statusText: "Invalid URL" },
   ];
@@ -109,7 +109,7 @@ Deno.test("[handleURL] root", () => {
 });
 Deno.test("[handleURL] /owner/repo", () => {
   const location = "https://raw.githubusercontent.com/owner/repo/master/mod.ts";
-  const expected = [
+  const expected: ReturnType<typeof handleURL> = [
     "301: Moved Permanently",
     {
       status: 301,
@@ -142,7 +142,7 @@ Deno.test("[handleURL] /owner/repo", () => {
 Deno.test("[handleURL] /owner/repo/path/to/file", () => {
   const location =
     "https://raw.githubusercontent.com/owner/repo/master/path/to/file";
-  const expected = [
+  const expected: ReturnType<typeof handleURL> = [
     "301: Moved Permanently",
     {
       status: 301,
@@ -174,7 +174,7 @@ Deno.test("[handleURL] /owner/repo/path/to/file", () => {
 });
 Deno.test("[handleURL] /owner/repo@tag", () => {
   const location = "https://raw.githubusercontent.com/owner/repo/tag/mod.ts";
-  const expected = [
+  const expected: ReturnType<typeof handleURL> = [
     "301: Moved Permanently",
     {
       status: 301,
@@ -207,7 +207,7 @@ Deno.test("[handleURL] /owner/repo@tag", () => {
 Deno.test("[handleURL] /owner/repo@tag/path/to/file", () => {
   const location =
     "https://raw.githubusercontent.com/owner/repo/tag/path/to/file";
-  const expected = [
+  const expected: ReturnType<typeof handleURL> = [
     "301: Moved Permanently",
     {
       status: 301,
