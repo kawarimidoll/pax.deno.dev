@@ -1,4 +1,4 @@
-import { Marked, tag as h } from "./deps.ts";
+import { marky, tag as h } from "./deps.ts";
 
 const readme = await Deno.readTextFile("./README.md");
 const corner = await Deno.readTextFile("./corner.html");
@@ -26,7 +26,7 @@ const index = "<!DOCTYPE html>" +
       h("meta", { name: "twitter:card", content: "summary" }),
       h("meta", { name: "twitter:site", content: "@kawarimidoll" }),
     ),
-    h("body", Marked.parse(readme).content, corner),
+    h("body", marky(readme), corner),
   );
 
 export function extract(path: string) {
@@ -42,8 +42,10 @@ export function extract(path: string) {
   ];
 }
 
-export function handleURL(url: string): [string, ResponseInit] {
-  const { pathname, search } = new URL(url);
+export async function handleURL(
+  url: string,
+): Promise<[string | ReadableStream<Uint8Array>, ResponseInit]> {
+  const { pathname, searchParams } = new URL(url);
   if (pathname === "/") {
     return [index, { headers: { "content-type": "text/html" } }];
   }
@@ -56,16 +58,23 @@ export function handleURL(url: string): [string, ResponseInit] {
     return [`${status}: ${statusText}`, init];
   }
 
-  const flag = search.replace(/^\?/, "").split("=")[0];
-
   let host = "https://raw.githubusercontent.com";
-  if (flag.includes("d")) {
+  if (searchParams.has("d")) {
     host = "https://doc.deno.land/" + host.replace(":/", "");
   }
   const location = [host, owner, repo, tag, file].join("/");
-  const [status, statusText] = [301, "Moved Permanently"];
-  const init = { status, statusText, headers: { location } };
-  return [`${status}: ${statusText}`, init];
+
+  const body = (searchParams.has("b") && file.endsWith(".pdf"))
+    ? await fetch(location).then((res) => res.body)
+    : null;
+
+  const headers: { "content-type": string } | { location: string } = body
+    ? { "content-type": "application/pdf" }
+    : { location };
+  const [status, statusText] = body ? [200, "OK"] : [301, "Moved Permanently"];
+  const init = { status, statusText, headers };
+
+  return [body || `${status}: ${statusText}`, init];
 }
 
 export function parse(path: string) {

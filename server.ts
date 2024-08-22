@@ -1,32 +1,20 @@
-/// <reference path="./_deploy.d.ts" />
 import { handleURL } from "./utils.ts";
 
 const isDev = !Deno.env.get("DENO_DEPLOYMENT_ID");
-const listener = Deno.listen({ port: 8080 });
 
-if (isDev) {
-  const { hostname, port } = listener.addr;
-  console.log(`HTTP server listening on http://${hostname}:${port}`);
-}
+async function handleConn(req: Request) {
+    console.log("Accessed:", req.url);
 
-async function handleConn(conn: Deno.Conn) {
-  for await (const e of Deno.serveHttp(conn)) {
-    console.log("Accessed:", e.request.url);
-
-    const [body, init] = handleURL(e.request.url);
+    const [body, init] = await handleURL(req.url);
 
     if (isDev) {
-      const { pathname } = new URL(e.request.url);
+      const { pathname } = new URL(req.url);
       if (pathname !== "/") {
         // debug output
-        e.respondWith(new Response(JSON.stringify(init)));
-        continue;
+        return new Response(JSON.stringify(init));
       }
     }
-    e.respondWith(new Response(body, init));
+    return new Response(body, init);
   }
-}
 
-for await (const conn of listener) {
-  handleConn(conn);
-}
+Deno.serve(handleConn)

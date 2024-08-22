@@ -82,6 +82,16 @@ https://pax.deno.dev/owner/repo?d
 # https://doc.deno.land/https/raw.githubusercontent.com/owner/repo/master/mod.ts
 ```
 
+### Display PDF in browser
+
+With the parameter `b` (mnemonic 'browser'), a pdf will be displayed in browser
+instead of being downloaded. This flag does not affect other file types. The
+main part of URL should follow the syntax above.
+
+```
+https://pax.deno.dev/owner/repo/somefile.pdf?b
+```
+
 ## Prior arts <img src="https://twemoji.maxcdn.com/v/13.1.0/72x72/1f3a8.png" alt="art" style="height: 1em;width: 1em;margin: 0 0.05em 0 0.1em;vertical-align: -0.1em;">
 
 - This project is heavily inspired by [Deno PKG](https://denopkg.com/).
