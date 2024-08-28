@@ -3,7 +3,8 @@ import { Marked, tag as h } from "./deps.ts";
 const readme = await Deno.readTextFile("./README.md");
 const corner = await Deno.readTextFile("./corner.html");
 const description = "Access the modules on GitHub via Deno Deploy🦕";
-const icon = "https://twemoji.maxcdn.com/v/13.1.0/72x72/1f4e6.png";
+const icon =
+  "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f4e6.png";
 const css = "https://cdn.jsdelivr.net/npm/water.css@2/out/water.min.css";
 const viewport = "width=device-width,initial-scale=1.0,minimum-scale=1.0";
 const index = "<!DOCTYPE html>" +
@@ -42,8 +43,10 @@ export function extract(path: string) {
   ];
 }
 
-export function handleURL(url: string): [string, ResponseInit] {
-  const { pathname, search } = new URL(url);
+export async function handleURL(
+  url: string,
+): Promise<[string | ReadableStream<Uint8Array>, ResponseInit]> {
+  const { pathname, searchParams } = new URL(url);
   if (pathname === "/") {
     return [index, { headers: { "content-type": "text/html" } }];
   }
@@ -56,16 +59,23 @@ export function handleURL(url: string): [string, ResponseInit] {
     return [`${status}: ${statusText}`, init];
   }
 
-  const flag = search.replace(/^\?/, "").split("=")[0];
-
   let host = "https://raw.githubusercontent.com";
-  if (flag.includes("d")) {
+  if (searchParams.has("d")) {
     host = "https://doc.deno.land/" + host.replace(":/", "");
   }
   const location = [host, owner, repo, tag, file].join("/");
-  const [status, statusText] = [301, "Moved Permanently"];
-  const init = { status, statusText, headers: { location } };
-  return [`${status}: ${statusText}`, init];
+
+  const body = (searchParams.has("b") && file.endsWith(".pdf"))
+    ? await fetch(location).then((res) => res.body)
+    : null;
+
+  const headers: HeadersInit = body
+    ? { "content-type": "application/pdf" }
+    : { location };
+  const [status, statusText] = body ? [200, "OK"] : [301, "Moved Permanently"];
+  const init = { status, statusText, headers };
+
+  return [body ?? `${status}: ${statusText}`, init];
 }
 
 export function parse(path: string) {
