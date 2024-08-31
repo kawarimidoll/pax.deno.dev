@@ -72,19 +72,19 @@ Deno.test("[handleURL] invalid", async () => {
     { status: 400, statusText: "Invalid URL" },
   ];
   assertEquals(
-    (await handleURL("https://pax.deno.dev/owner")),
+    await handleURL("https://pax.deno.dev/owner"),
     expected,
   );
   assertEquals(
-    (await handleURL("https://pax.deno.dev/owner/")),
+    await handleURL("https://pax.deno.dev/owner/"),
     expected,
   );
   assertEquals(
-    (await handleURL("https://pax.deno.dev/owner@tag")),
+    await handleURL("https://pax.deno.dev/owner@tag"),
     expected,
   );
   assertEquals(
-    (await handleURL("https://pax.deno.dev/owner@tag?d")),
+    await handleURL("https://pax.deno.dev/owner@tag?d"),
     expected,
   );
 });
@@ -118,15 +118,15 @@ Deno.test("[handleURL] /owner/repo", async () => {
     },
   ];
   assertEquals(
-    (await handleURL("https://pax.deno.dev/owner/repo")),
+    await handleURL("https://pax.deno.dev/owner/repo"),
     expected,
   );
   assertEquals(
-    (await handleURL("https://pax.deno.dev/owner/repo/")),
+    await handleURL("https://pax.deno.dev/owner/repo/"),
     expected,
   );
   assertEquals(
-    (await handleURL("https://pax.deno.dev/owner/repo?d")),
+    await handleURL("https://pax.deno.dev/owner/repo?d"),
     [
       "301: Moved Permanently",
       {
@@ -151,15 +151,15 @@ Deno.test("[handleURL] /owner/repo/path/to/file", async () => {
     },
   ];
   assertEquals(
-    (await handleURL("https://pax.deno.dev/owner/repo/path/to/file")),
+    await handleURL("https://pax.deno.dev/owner/repo/path/to/file"),
     expected,
   );
   assertEquals(
-    (await handleURL("https://pax.deno.dev/owner/repo/path/to/file/")),
+    await handleURL("https://pax.deno.dev/owner/repo/path/to/file/"),
     expected,
   );
   assertEquals(
-    (await handleURL("https://pax.deno.dev/owner/repo/path/to/file?d")),
+    await handleURL("https://pax.deno.dev/owner/repo/path/to/file?d"),
     [
       "301: Moved Permanently",
       {
@@ -183,15 +183,15 @@ Deno.test("[handleURL] /owner/repo@tag", async () => {
     },
   ];
   assertEquals(
-    (await handleURL("https://pax.deno.dev/owner/repo@tag")),
+    await handleURL("https://pax.deno.dev/owner/repo@tag"),
     expected,
   );
   assertEquals(
-    (await handleURL("https://pax.deno.dev/owner/repo@tag/")),
+    await handleURL("https://pax.deno.dev/owner/repo@tag/"),
     expected,
   );
   assertEquals(
-    (await handleURL("https://pax.deno.dev/owner/repo@tag?d")),
+    await handleURL("https://pax.deno.dev/owner/repo@tag?d"),
     [
       "301: Moved Permanently",
       {
@@ -216,15 +216,15 @@ Deno.test("[handleURL] /owner/repo@tag/path/to/file", async () => {
     },
   ];
   assertEquals(
-    (await handleURL("https://pax.deno.dev/owner/repo@tag/path/to/file")),
+    await handleURL("https://pax.deno.dev/owner/repo@tag/path/to/file"),
     expected,
   );
   assertEquals(
-    (await handleURL("https://pax.deno.dev/owner/repo@tag/path/to/file/")),
+    await handleURL("https://pax.deno.dev/owner/repo@tag/path/to/file/"),
     expected,
   );
   assertEquals(
-    (await handleURL("https://pax.deno.dev/owner/repo@tag/path/to/file?d")),
+    await handleURL("https://pax.deno.dev/owner/repo@tag/path/to/file?d"),
     [
       "301: Moved Permanently",
       {
