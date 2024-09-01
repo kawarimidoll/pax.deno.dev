@@ -66,50 +66,50 @@ Deno.test("[extract] /owner/repo@tag/nested/file", () => {
   );
 });
 
-Deno.test("[handleURL] invalid", () => {
-  const expected: ReturnType<typeof handleURL> = [
+Deno.test("[handleURL] invalid", async () => {
+  const expected: Awaited<ReturnType<typeof handleURL>> = [
     "400: Invalid URL",
     { status: 400, statusText: "Invalid URL" },
   ];
   assertEquals(
-    handleURL("https://pax.deno.dev/owner"),
+    await handleURL("https://pax.deno.dev/owner"),
     expected,
   );
   assertEquals(
-    handleURL("https://pax.deno.dev/owner/"),
+    await handleURL("https://pax.deno.dev/owner/"),
     expected,
   );
   assertEquals(
-    handleURL("https://pax.deno.dev/owner@tag"),
+    await handleURL("https://pax.deno.dev/owner@tag"),
     expected,
   );
   assertEquals(
-    handleURL("https://pax.deno.dev/owner@tag?d"),
+    await handleURL("https://pax.deno.dev/owner@tag?d"),
     expected,
   );
 });
-Deno.test("[handleURL] root", () => {
+Deno.test("[handleURL] root", async () => {
   // don't test page contents
   assertEquals(
-    handleURL("https://pax.deno.dev")[1],
+    (await handleURL("https://pax.deno.dev"))[1],
     { headers: { "content-type": "text/html" } },
   );
   assertEquals(
-    handleURL("https://pax.deno.dev/")[1],
+    (await handleURL("https://pax.deno.dev/"))[1],
     { headers: { "content-type": "text/html" } },
   );
   assertEquals(
-    handleURL("https://pax.deno.dev?d")[1],
+    (await handleURL("https://pax.deno.dev?d"))[1],
     { headers: { "content-type": "text/html" } },
   );
   assertEquals(
-    handleURL("https://pax.deno.dev#d")[1],
+    (await handleURL("https://pax.deno.dev#d"))[1],
     { headers: { "content-type": "text/html" } },
   );
 });
-Deno.test("[handleURL] /owner/repo", () => {
+Deno.test("[handleURL] /owner/repo", async () => {
   const location = "https://raw.githubusercontent.com/owner/repo/master/mod.ts";
-  const expected: ReturnType<typeof handleURL> = [
+  const expected: Awaited<ReturnType<typeof handleURL>> = [
     "301: Moved Permanently",
     {
       status: 301,
@@ -118,15 +118,15 @@ Deno.test("[handleURL] /owner/repo", () => {
     },
   ];
   assertEquals(
-    handleURL("https://pax.deno.dev/owner/repo"),
+    await handleURL("https://pax.deno.dev/owner/repo"),
     expected,
   );
   assertEquals(
-    handleURL("https://pax.deno.dev/owner/repo/"),
+    await handleURL("https://pax.deno.dev/owner/repo/"),
     expected,
   );
   assertEquals(
-    handleURL("https://pax.deno.dev/owner/repo?d"),
+    await handleURL("https://pax.deno.dev/owner/repo?d"),
     [
       "301: Moved Permanently",
       {
@@ -139,10 +139,10 @@ Deno.test("[handleURL] /owner/repo", () => {
     ],
   );
 });
-Deno.test("[handleURL] /owner/repo/path/to/file", () => {
+Deno.test("[handleURL] /owner/repo/path/to/file", async () => {
   const location =
     "https://raw.githubusercontent.com/owner/repo/master/path/to/file";
-  const expected: ReturnType<typeof handleURL> = [
+  const expected: Awaited<ReturnType<typeof handleURL>> = [
     "301: Moved Permanently",
     {
       status: 301,
@@ -151,15 +151,15 @@ Deno.test("[handleURL] /owner/repo/path/to/file", () => {
     },
   ];
   assertEquals(
-    handleURL("https://pax.deno.dev/owner/repo/path/to/file"),
+    await handleURL("https://pax.deno.dev/owner/repo/path/to/file"),
     expected,
   );
   assertEquals(
-    handleURL("https://pax.deno.dev/owner/repo/path/to/file/"),
+    await handleURL("https://pax.deno.dev/owner/repo/path/to/file/"),
     expected,
   );
   assertEquals(
-    handleURL("https://pax.deno.dev/owner/repo/path/to/file?d"),
+    await handleURL("https://pax.deno.dev/owner/repo/path/to/file?d"),
     [
       "301: Moved Permanently",
       {
@@ -172,9 +172,9 @@ Deno.test("[handleURL] /owner/repo/path/to/file", () => {
     ],
   );
 });
-Deno.test("[handleURL] /owner/repo@tag", () => {
+Deno.test("[handleURL] /owner/repo@tag", async () => {
   const location = "https://raw.githubusercontent.com/owner/repo/tag/mod.ts";
-  const expected: ReturnType<typeof handleURL> = [
+  const expected: Awaited<ReturnType<typeof handleURL>> = [
     "301: Moved Permanently",
     {
       status: 301,
@@ -183,15 +183,15 @@ Deno.test("[handleURL] /owner/repo@tag", () => {
     },
   ];
   assertEquals(
-    handleURL("https://pax.deno.dev/owner/repo@tag"),
+    await handleURL("https://pax.deno.dev/owner/repo@tag"),
     expected,
   );
   assertEquals(
-    handleURL("https://pax.deno.dev/owner/repo@tag/"),
+    await handleURL("https://pax.deno.dev/owner/repo@tag/"),
     expected,
   );
   assertEquals(
-    handleURL("https://pax.deno.dev/owner/repo@tag?d"),
+    await handleURL("https://pax.deno.dev/owner/repo@tag?d"),
     [
       "301: Moved Permanently",
       {
@@ -204,10 +204,10 @@ Deno.test("[handleURL] /owner/repo@tag", () => {
     ],
   );
 });
-Deno.test("[handleURL] /owner/repo@tag/path/to/file", () => {
+Deno.test("[handleURL] /owner/repo@tag/path/to/file", async () => {
   const location =
     "https://raw.githubusercontent.com/owner/repo/tag/path/to/file";
-  const expected: ReturnType<typeof handleURL> = [
+  const expected: Awaited<ReturnType<typeof handleURL>> = [
     "301: Moved Permanently",
     {
       status: 301,
@@ -216,15 +216,15 @@ Deno.test("[handleURL] /owner/repo@tag/path/to/file", () => {
     },
   ];
   assertEquals(
-    handleURL("https://pax.deno.dev/owner/repo@tag/path/to/file"),
+    await handleURL("https://pax.deno.dev/owner/repo@tag/path/to/file"),
     expected,
   );
   assertEquals(
-    handleURL("https://pax.deno.dev/owner/repo@tag/path/to/file/"),
+    await handleURL("https://pax.deno.dev/owner/repo@tag/path/to/file/"),
     expected,
   );
   assertEquals(
-    handleURL("https://pax.deno.dev/owner/repo@tag/path/to/file?d"),
+    await handleURL("https://pax.deno.dev/owner/repo@tag/path/to/file?d"),
     [
       "301: Moved Permanently",
       {
