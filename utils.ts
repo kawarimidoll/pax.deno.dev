@@ -1,4 +1,5 @@
-import { Marked, tag as h } from "./deps.ts";
+import { tag as h } from "@kawarimidoll/markup-tag";
+import { render } from "@deno/gfm";
 
 const readme = await Deno.readTextFile("./README.md");
 const corner = await Deno.readTextFile("./corner.html");
@@ -27,7 +28,7 @@ const index = "<!DOCTYPE html>" +
       h("meta", { name: "twitter:card", content: "summary" }),
       h("meta", { name: "twitter:site", content: "@kawarimidoll" }),
     ),
-    h("body", Marked.parse(readme).content, corner),
+    h("body", render(readme), corner),
   );
 
 export function extract(path: string) {
