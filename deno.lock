@@ -3,9 +3,9 @@
   "specifiers": {
     "jsr:@deno/gfm@0.12": "0.12.0",
     "jsr:@denosaurs/emoji@~0.3.1": "0.3.1",
-    "jsr:@kawarimidoll/markup-tag@1": "1.0.1",
-    "jsr:@std/assert@1": "1.0.19",
-    "jsr:@std/internal@^1.0.12": "1.0.12",
+    "jsr:@kawarimidoll/markup-tag@^1.0.1": "1.0.1",
+    "jsr:@std/assert@^1.0.19": "1.0.19",
+    "jsr:@std/internal@^1.0.12": "1.0.14",
     "npm:github-slugger@2": "2.0.0",
     "npm:he@^1.2.0": "1.2.0",
     "npm:katex@0.16": "0.16.37",
@@ -44,8 +44,8 @@
         "jsr:@std/internal"
       ]
     },
-    "@std/internal@1.0.12": {
-      "integrity": "972a634fd5bc34b242024402972cd5143eac68d8dffaca5eaa4dba30ce17b027"
+    "@std/internal@1.0.14": {
+      "integrity": "291516b3d4c35024d6ffbc0a9df5bf4c64116e05b50012cf846710152d2ffdf7"
     }
   },
   "npm": {
@@ -228,8 +228,8 @@
   "workspace": {
     "dependencies": [
       "jsr:@deno/gfm@0.12",
-      "jsr:@kawarimidoll/markup-tag@1",
-      "jsr:@std/assert@1"
+      "jsr:@kawarimidoll/markup-tag@^1.0.1",
+      "jsr:@std/assert@^1.0.19"
     ]
   }
 }
