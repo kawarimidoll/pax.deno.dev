@@ -4,6 +4,24 @@
 [![deno.land](https://img.shields.io/badge/deno-%5E2-green?logo=deno)](https://deno.land)
 [![LICENSE](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE)
 
+> [!WARNING]
+> **This service is gone and this project is archived.**
+>
+> Deno Deploy Classic, which hosted `pax.deno.dev`, was shut down on 2026-07-20.
+> It cannot be restored: the whole point of this project was the `pax.deno.dev`
+> hostname, and the new Deno Deploy serves apps under `<app>.<org>.deno.net`
+> instead.
+>
+> Rewrite your imports to the URL pax redirected to. `@branch_or_tag` defaulted
+> to `master` and the path defaulted to `mod.ts`, so spell both out explicitly:
+>
+> ```diff
+> - import { foo } from "https://pax.deno.dev/owner/repo@v1.0.0/mod.ts";
+> + import { foo } from "https://raw.githubusercontent.com/owner/repo/v1.0.0/mod.ts";
+> ```
+>
+> For published modules, [JSR](https://jsr.io) is the better long-term target.
+
 Access the modules on GitHub via Deno Deploy
 <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f995.png" alt="sauropods" style="height: 1em;width: 1em;margin: 0 0.05em 0 0.1em;vertical-align: -0.1em;">
 
